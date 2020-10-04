@@ -225,6 +225,21 @@ setInterval(function(){
 		}
 	}
 	
+	for(playerIndex in playerInfo){
+		let player = playerInfo[playerIndex];
+		let deleteThis = 1;
+		for(entityId in entities){
+			let entity = entities[entityId];
+			if(entity.playerUUID == player.data.UUID){
+				deleteThis=0;
+				break;
+			}
+		}
+		if(deleteThis==1){
+			delete playerInfo[playerIndex];
+		}
+	}
+	
 	
 	}
 },16);
