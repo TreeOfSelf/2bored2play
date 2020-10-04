@@ -143,7 +143,14 @@ function map_remove(data){
 
 
 //Filter packets 
-curPos=null;
+curPos={
+x: 0,
+y: 1.62,
+z: 0,
+yaw: 0,
+pitch: 0,
+flags: 0x00
+}
 
 setInterval(function(){
 	if(curPos!=null){
@@ -729,6 +736,7 @@ function join() {
 			newProxyClient.write('map_chunk',mapPackets[mapData]);
 		}*/
 
+		
 		packetList.position = curPos;
 		
 		for(property in packetList){
