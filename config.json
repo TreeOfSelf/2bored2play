@@ -1,0 +1,27 @@
+{
+	"ports": {
+		"minecraft": 4230,
+		"web": 3100
+	},
+	"password": "",
+	"MCversion": "1.12.2",
+	"logging": true,
+	"reconnect": {
+		"onError": true,
+		"notConnectedQueueEnd": false
+	},
+	"minecraftserver": {
+		"hostname": "127.0.0.1",
+		"is2b2t": false,
+		"port": 25565,
+		"version": "1.12.2",
+		"onlinemode": true,
+		"username": "sebastian97@gmail.com"
+	},
+	"notification": {
+		"enabled": true,
+		"queuePlace": 20
+	},
+	"antiAntiAFK": true,
+	"chunkCaching": true
+}

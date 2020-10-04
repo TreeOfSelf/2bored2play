@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Prismarine Viewer</title>
+    <style type="text/css">
+      html {
+        overflow: hidden;
+      }
+
+      html, body {
+        height: 100%;
+
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        height: 100%;
+        width: 100%;
+        font-size: 0;
+
+        margin: 0;
+        padding: 0;
+      }
+	  
+	  button { 
+		background-color : rgb(50,50,50);
+		color : white;
+		position : absolute;
+		font-size : 3.0vw;
+		opacity : 0.15;
+	  }
+	  
+	  button:hover {
+		opacity: 0.7;
+	  }
+	  
+	  #fpBtn {
+		top : 1%;
+		left : 3%;
+	  }
+	  
+	  #followBtn {
+		top : 1%;
+		left : 26%;
+	  }
+	  
+	  #controlBtn {
+		top : 1%;
+		left : 43%;
+	  }
+	  
+	  #coords {
+		top : 0%;
+		right: 10%;
+		font-size : 2.2vw;
+		color : white;
+		position:absolute;
+		text-shadow: 2px 2px #000000;
+	  }
+	  
+	  
+    </style>
+  </head>
+  <body>
+    <canvas id='draw'></canvas>
+	<script type="text/javascript" src="index.js"></script>
+	
+	<button id ="fpBtn"> First Person </button>
+	<button id ="followBtn"> Follow </button>
+	<button id ="controlBtn"> Control </button>	
+	<p id ="coords"></p>
+	
+	<script>
+		
+
+		
+		document.getElementById("followBtn").addEventListener("click", 
+			function(){	
+			
+					if(follow==true){
+						follow=false;
+						controls.enabled=true;
+						controlsOrbit.enabled=false;
+						followBtn.style.opacity = 0.15
+						followBtn.style.backgroundColor = 'rgb(50,50,50)';
+					}else{
+						follow=true;
+						firstPerson=false;
+						fpBtn.style.opacity = 0.15		
+						fpBtn.style.backgroundColor = 'rgb(50,50,50)';							
+						controls.enabled=false;
+						controlsOrbit.enabled=true;		
+						controlsOrbit.target.set(botMesh.position.x, botMesh.position.y, botMesh.position.z)	
+						followBtn.style.opacity = 0.5	
+						followBtn.style.backgroundColor = 'rgb(100,50,50)';						
+					}
+				
+				
+			});
+		
+		
+		document.getElementById("fpBtn").addEventListener("click", 
+			function(){
+				if(firstPerson==true){
+					firstPerson = false;
+					fpBtn.style.opacity = 0.15		
+					fpBtn.style.backgroundColor = 'rgb(50,50,50)';						
+					if(follow==false){
+					controls.enabled=true;
+					controlsOrbit.enabled=false;
+					camera.rotation.x = 0;
+					camera.rotation.y = 0;
+					camera.rotation.z = 0;
+
+					
+					}else{
+						var pos = botMesh.position
+						controlsOrbit.target.set(pos.x, pos.y, pos.z)
+						camera.position.set(pos.x, pos.y + 20, pos.z + 20)  
+						
+					}
+	
+				}else{
+					firstPerson = true;
+					follow = false;
+					followBtn.style.opacity = 0.15
+					followBtn.style.backgroundColor = 'rgb(50,50,50)';
+					fpBtn.style.opacity = 0.5
+					fpBtn.style.backgroundColor = 'rgb(100,50,50)';	
+					controls.enabled=false;
+					controlsOrbit.enabled=false;
+					
+				}
+			});
+		
+		document.getElementById("controlBtn").addEventListener("click", 
+			function(){
+				controlled = !controlled;
+				if(controlled==false){
+					//controls.connect();
+					socket.emit('control',false);
+					controlBtn.style.opacity=0.15
+					controlBtn.style.backgroundColor = 'rgb(50,50,50)';	
+				}else{
+					socket.emit('control',true);
+					//controls.disconnect();
+					controlBtn.style.opacity=0.5
+					controlBtn.style.backgroundColor = 'rgb(100,50,50)';	
+				}
+				keys = [];
+			});		
+		
+
+		
+		
+		
+		
+	</script>
+  </body>
+</html>
