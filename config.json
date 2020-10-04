@@ -11,10 +11,10 @@
 		"notConnectedQueueEnd": false
 	},
 	"minecraftserver": {
-		"hostname": "127.0.0.1",
-		"is2b2t": false,
+		"hostname": "2b2t.org",
+		"is2b2t": true,
 		"port": 25565,
-		"version": false,
+		"version": "1.12.2",
 		"onlinemode": true,
 		"username": "sebastian97@gmail.com"
 	},

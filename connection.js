@@ -452,7 +452,9 @@ function join() {
 					ETAhour = totalWaitTime - timepassed;
 					const etaAmnt = Math.floor(ETAhour) + "h " + Math.round((ETAhour % 1) * 60) + "m";
 					server.motd = `Place in queue: ${positioninqueue} ETA: ${etaAmnt}`; // set the MOTD because why not
+					console.log('Placed in queue: '.cyan+positioninqueue.brightGreen+' ETA: '.cyan+etaAmnt);
 				}
+				packet_once(meta.name,data);
 				break;
 			case "chat":
 				if (finishedQueue === false) { // we can know if we're about to finish the queue by reading the chat message
@@ -460,6 +462,7 @@ function join() {
 					let chatMessage = JSON.parse(data.message);
 					if (chatMessage.text && chatMessage.text === "Connecting to the server...") {
 						if (proxyClient == null) { //if we have no client connected and we should restart
+							
 							stop();
 						} else {
 							finishedQueue = true;
