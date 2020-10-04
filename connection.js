@@ -107,6 +107,18 @@ multiBlockChange = {
 }
 
 
+filterArray = function (array, condition,data){
+	let list = [];
+	for(var v= 0 ; v<array.length; v++){
+		if(condition(array[v]) == true){
+			list.push(array.splice(v,1));
+			v--;
+		}	
+	}
+	return(list);
+}
+
+
 
 function packet_add(name,data){
 	//console.log('Adding: '+name);
@@ -155,7 +167,7 @@ setInterval(function(){
 					}				
 				break;
 				case "block_change":
-					var dist = Math.abs(packet[1].x - curPos.x) + Math.abs(packet[1].z - curPos.z);
+					var dist = Math.abs(packet[1].location.x - curPos.x) + Math.abs(packet[1].location.z - curPos.z);
 					if(dist>400){
 						packetSend.splice(k,1);
 						k++;
@@ -163,51 +175,44 @@ setInterval(function(){
 				break;
 				case "spawn_entity":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;
+					//filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;
 					}
 				break;
 				case "spawn_entity_living":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;
+					//filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;
 					}
 				break;
 				case "named_entity_spawn":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;
+					//filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;
 					}
 				break;
 				case "entity_metadata":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;						
+					//filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;						
 					}
 				break;
 				case "entity_update_attributes":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;					
+					//filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;					
 					}
 				break;
 				case "entity_status":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;				
+					//filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;				
 					}
 				break;
 				case "set_passengers":
 					if(entities[packet[1].entityId]==null){
-					packetSend.filter(packet => packet[1].entityId == entityId);
-					packetSend.splice(k,1);
-					k++;				
+					filterArray(packetSend,packetData => packet[1].entityId == packetData[1].entityId);
+					//k++;				
 					}
 				break;
 
@@ -220,7 +225,9 @@ setInterval(function(){
 		let entity = entities[entityId];
 		var dist = Math.abs(entity.x - curPos.x) + Math.abs(entity.z - curPos.z);
 		if(dist>200){
-			packetSend.filter(packet => packet[1].entityId == entityId);
+			filterArray(packetSend,packet => packet[1].entityId == entityId);
+			
+			console.log('deleting');
 			delete entities[entityId];
 		}
 	}
@@ -257,6 +264,9 @@ setInterval(function(){
 entities = [];
 
 dimension=null;
+respawnPacket=null;
+
+
 
 
 function join() {
@@ -296,7 +306,9 @@ function join() {
 				packet_once(meta.name,data);
 			break;
 			case "collect":
-				packetSend.filter(packet => packet[1].entityId == data.entityId);
+			filterArray(packetSend,packet => packet[1].entityId == data.collectedEntityId);
+			
+			delete entities[data.collectedEntityId];
 			break;
 			case "block_break_animation":
 			
@@ -364,7 +376,11 @@ function join() {
 				//packet_add(meta.name,data);
 			break;
 			case "entity_destroy":
-				packetSend.filter(packet => packet[1].entityId == data.entityId);
+				for(var k =0;k<data.entityIds.length;k++){
+					const entityId = data.entityIds[k];
+					filterArray(packetSend,packet => packet[1].entityId == entityId);
+					delete entities[entityId];
+				}
 				//packet_add(meta.name,data);
 			break;
 			case "entity_equipment":
@@ -372,10 +388,8 @@ function join() {
 			break;
 			case "player_info":
 				//See if perhaps, we can sort through our entities list, see if we have a match for the UUID and if not delete the player_info packet
-				//console.log(meta.name,data);
 				let add = 1;
 				for(var k =0;k<playerInfo.length;k++){
-					//console.log(playerInfo[k])
 					if(playerInfo[k].data[0].name == data.data[0].name){
 					playerInfo[k] = data;
 					add=0;
@@ -394,6 +408,9 @@ function join() {
 			case "camera":
 				
 			break;
+			case "combat_event":
+			
+			break;
 			case "remove_entity_effect":
 			
 			break;
@@ -408,12 +425,15 @@ function join() {
 				//if(config.chunkCaching) chunkData.set(data.x + "_" + data.z, data);
 				//packetSend.push([meta.name,data]);
 				//map_add(data);
-				let test  =packetSend.filter(packet => packet[1].x == data.x && packet[1].y == data.u && packet[1].groundUp!=null);
+				
+				
+				//console.log(data.x+'_'+data.z,filterArray(packetSend,packet => packet[0] == 'map_chunk' && packet[1].x == data.x && packet[1].z == data.z,data));
+				
 				packet_add(meta.name,data);
 
 				break;
 			case "unload_chunk":
-			packetSend.filter(packet => packet[1].x == data.chunkX && packet[1].y == data.chunkY && packet[1].groundUp!=null);
+			filterArray(packetSend,packet => packet[0] == 'map_chunk' && packet[1].x == data.chunkX && packet[1].z == data.chunkZ,data);
 			//packet_add(meta.name,data);
 				//map_remove(data);
 				//if(config.chunkCaching) chunkData.delete(data.chunkX + "_" + data.chunkZ);
@@ -449,21 +469,11 @@ function join() {
 				}
 				break;
 			case "respawn":
-				//data.gameMode = 0;
-				//Object.assign(loginpacket, data);
-				/*if(dimension!=null){
-					if(dimension!=data.dimension){
-						console.log('RESTTY');
-						packetSend = packetSend.splice(0,20);
-						entities=[];
-						playerInfo = [];
-						multiBlockChange = {};
-						
-					}
-				}*/
+
 				entities=[];
 				inventory=[];
-				packet_add(meta.name,data);
+				respawnPacket = data;
+				
 				break;
 			case "login":
 				console.log('Connected!'.cyan);
@@ -478,8 +488,7 @@ function join() {
 				packet_once(meta.name,data);
 			break;
 			case "block_action":
-				//console.log(meta.name,data);
-				//packet_add(meta.name,data);
+
 			break;
 			case "entity_head_rotation":
 			//	packet_add(meta.name,data);				
@@ -488,23 +497,48 @@ function join() {
 			//	packet_add(meta.name,data);				
 			break;
 			case "entity_move_look":
-			/*if(entities[data.entityId]!=null){
-				entities[data.entityId].x+= data.dX;
-				entities[data.entityId].y+= data.dY;
-				entities[data.entityId].z+= data.dZ;				
-			}*/			
-			//	packet_add(meta.name,data);
+			
+			if(entities[data.entityId]!=null){
+				entities[data.entityId].x+= data.dX/128/64;
+				entities[data.entityId].y+= data.dY/128/64;
+				entities[data.entityId].z+= data.dZ/128/64;	
+				entities[data.entityId].pitch = data.pitch;
+				entities[data.entityId].yaw = data.yaw;
+			}			
+			
+			for(var k =0;k<packetSend.length;k++){
+				if(packetSend[k][1].entityId == data.entityId && packetSend[k][1].x!=null){
+					packetSend[k][1].x += data.dX/128/64;
+					packetSend[k][1].y += data.dY/128/64;
+					packetSend[k][1].z += data.dZ/128/64;
+					packetSend[k][1].pitch = data.pitch;
+					packetSend[k][1].yaw = data.yaw;
+				}
+			}	
+			
 			break;
 			case  "entity_update_attributes":
 				packet_add(meta.name,data);
 			break;
 			case "rel_entity_move":
-			/*if(entities[data.entityId]!=null){
-				entities[data.entityId].x+= data.dX;
-				entities[data.entityId].y+= data.dY;
-				entities[data.entityId].z+= data.dZ;				
-			}*/
-			//	packet_add(meta.name,data);				
+			
+
+			if(entities[data.entityId]!=null){
+				entities[data.entityId].x+= data.dX/128/64;
+				entities[data.entityId].y+= data.dY/128/64;
+				entities[data.entityId].z+= data.dZ/128/64;				
+			}			
+			
+			
+
+			
+			for(var k =0;k<packetSend.length;k++){
+				if(packetSend[k][1].entityId == data.entityId && packetSend[k][1].x!=null){
+					packetSend[k][1].x += data.dX/128/64;
+					packetSend[k][1].y += data.dY/128/64;
+					packetSend[k][1].z += data.dZ/128/64;
+				}
+			}		
 			break;
 			case "experience":
 				packet_once(meta.name,data);	
@@ -513,7 +547,11 @@ function join() {
 				packet_once(meta.name,data);	
 			break;
 			case "block_change":
-				//console.log(meta.name,data);		
+
+				filterArray(packetSend,packet => packet[0] == 'block_change' && packet[1].location.x == data.location.x &&
+				packet[1].location.y == data.location.y &&
+				packet[1].location.z == data.location.z);
+			
 				packet_add(meta.name,data);
 			break;
 			case "multi_block_change":
@@ -542,9 +580,25 @@ function join() {
 			
 			break;
 			case "entity_look":
-			//	packet_add(meta.name,data);			
+
+			if(entities[data.entityId]!=null){
+
+				entities[data.entityId].pitch = data.pitch;
+				entities[data.entityId].yaw = data.yaw;
+			}			
+			
+			for(var k =0;k<packetSend.length;k++){
+				if(packetSend[k][1].entityId == data.entityId && packetSend[k][1].x!=null){
+					packetSend[k][1].pitch = data.pitch;
+					packetSend[k][1].yaw = data.yaw;
+				}
+			}	
+					
 			break;
 			case "sound_effect":
+			
+			break;
+			case "tab_complete":
 			
 			break;
 			case "animation":
@@ -581,7 +635,7 @@ function join() {
 			
 			break;
 			case "set_passengers":
-				packetSend.filter(packet => packet[0] == 'set_passengers' && packet[1].entityId == data.entityId);
+				filterArray(packetSend,packet => packet[0] == 'set_passengers' && packet[1].entityId == data.entityId);
 				packet_add(meta.name,data);
 			break;
 			case "named_sound_effect":
@@ -653,11 +707,14 @@ function join() {
 		
 		//newProxyClient.write('login',loginpacket);
 		
+
 		for(var k =0;k<playerInfo.length;k++){
 			newProxyClient.write('player_info',playerInfo[k]);
 		}
 	
-		
+		if(respawnPacket!=null){
+			newProxyClient.write('respawn',respawnPacket);
+		}
 		
 		for(var k=0; k<packetSend.length; k++){
 			newProxyClient.write(packetSend[k][0],packetSend[k][1]);
