@@ -4,7 +4,7 @@
 		"web": 3100
 	},
 	"password": "",
-	"MCversion": "1.12.2",
+	"MCversion": false,
 	"logging": true,
 	"reconnect": {
 		"onError": true,
@@ -14,7 +14,7 @@
 		"hostname": "127.0.0.1",
 		"is2b2t": false,
 		"port": 25565,
-		"version": "1.12.2",
+		"version": false,
 		"onlinemode": true,
 		"username": "sebastian97@gmail.com"
 	},

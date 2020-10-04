@@ -32,10 +32,12 @@ var options;
 var doing;
 let interval = {};
 
+
+
 // lets
-var proxyClient; // a reference to the client that is the actual minecraft game
-var client; // the client to connect to 2b2t
-var server; // the minecraft server to pass packets
+proxyClient=null; // a reference to the client that is the actual minecraft game
+client=null; // the client to connect to 2b2t
+server=null; // the minecraft server to pass packets
 
 options = {
 	host: config.minecraftserver.hostname,
@@ -174,7 +176,6 @@ setInterval(function(){
 					}
 				break;
 				case "named_entity_spawn":
-					console.log(meta.name,data);
 					if(entities[packet[1].entityId]==null){
 					packetSend.filter(packet => packet[1].entityId == entityId);
 					packetSend.splice(k,1);
@@ -196,6 +197,13 @@ setInterval(function(){
 					}
 				break;
 				case "entity_status":
+					if(entities[packet[1].entityId]==null){
+					packetSend.filter(packet => packet[1].entityId == entityId);
+					packetSend.splice(k,1);
+					k++;				
+					}
+				break;
+				case "set_passengers":
 					if(entities[packet[1].entityId]==null){
 					packetSend.filter(packet => packet[1].entityId == entityId);
 					packetSend.splice(k,1);
@@ -225,20 +233,21 @@ setInterval(function(){
 		}
 	}
 	
-	for(playerIndex in playerInfo){
+	/*for(playerIndex in playerInfo){
 		let player = playerInfo[playerIndex];
 		let deleteThis = 1;
 		for(entityId in entities){
 			let entity = entities[entityId];
-			if(entity.playerUUID == player.data.UUID){
+			if(entity.playerUUID == player.data[0].UUID){
 				deleteThis=0;
 				break;
 			}
 		}
 		if(deleteThis==1){
-			delete playerInfo[playerIndex];
+			console.log('Deleting: '+player.data[0].name);
+			playerInfo.splice(playerIndex,1);
 		}
-	}
+	}*/
 	
 	
 	}
@@ -247,21 +256,7 @@ setInterval(function(){
 
 entities = [];
 
-testData = {
-
-
-  chunkX: 276,
-  chunkZ: -3338,
-  records: [
-    { horizontalPos: 180, y: 52, blockId: 151 },
-    { horizontalPos: 179, y: 52, blockId: 150 },
-    { horizontalPos: 195, y: 52, blockId: 151 },
-    { horizontalPos: 210, y: 52, blockId: 151 },
-    { horizontalPos: 194, y: 52, blockId: 150 }
-  ]
-
-
-}
+dimension=null;
 
 
 function join() {
@@ -276,6 +271,9 @@ function join() {
 			default:
 				console.log(meta.name);
 			break;
+			case "boss_bar":
+				packet_once(meta.name,data);
+			break;
 			case "unlock_recipes":
 				packet_add(meta.name,data);
 			break;
@@ -283,10 +281,28 @@ function join() {
 				//packet_add(meta.name,data);			
 			break;
 			case "compress":
-			//	packet_add(meta.name,data);						
+				//packet_add(meta.name,data);						
+			break;
+			case "encryption_begin":
+				//packet_once(meta.name,data);
 			break;
 			case "window_items":
 				packet_once(meta.name,data);
+			break;
+			case "open_window":
+				packet_once(meta.name,data);
+			break;
+			case "close_window":
+				packet_once(meta.name,data);
+			break;
+			case "collect":
+				packetSend.filter(packet => packet[1].entityId == data.entityId);
+			break;
+			case "block_break_animation":
+			
+			break;
+			case "tile_entity_data":
+				//console.log(data);
 			break;
 			case "update_time":
 				packet_once(meta.name,data);
@@ -336,6 +352,15 @@ function join() {
 				entities[data.entityId].y= data.y;
 				entities[data.entityId].z= data.z;				
 			}			
+			
+			for(var k =0;k<packetSend.length;k++){
+				if(packetSend[k][1].entityId == data.entityId && packetSend[k][1].x!=null){
+					packetSend[k][1].x = data.x;
+					packetSend[k][1].y = data.y;
+					packetSend[k][1].z = data.z;
+				}
+			}
+			
 				//packet_add(meta.name,data);
 			break;
 			case "entity_destroy":
@@ -348,38 +373,53 @@ function join() {
 			case "player_info":
 				//See if perhaps, we can sort through our entities list, see if we have a match for the UUID and if not delete the player_info packet
 				//console.log(meta.name,data);
-				var set =1;
+				let add = 1;
 				for(var k =0;k<playerInfo.length;k++){
 					//console.log(playerInfo[k])
-					for(var c=0;c<playerInfo[k].data.length;c++){
-						if(playerInfo[k].data[c].name == data.data[0].name){
-							return;
-						}
-						
+					if(playerInfo[k].data[0].name == data.data[0].name){
+					playerInfo[k] = data;
+					add=0;
+					k=playerInfo.length;
 					}
 				}
-				playerInfo.push(data);
+				if(data.data[0].name!=null && add==1){
+					playerInfo.push(data);
+				}
 				//packet_add(meta.name,data);
 			break;
 			case "set_slot":
-				inventory[data.slot] = {...data};
+				inventory[data.slot] = data;
 				//packet_add(meta.name,data);
 			break;
+			case "camera":
+				
+			break;
+			case "remove_entity_effect":
+			
+			break;
+			case "explosion":
+			
+			break;
 			case "position":
-				packet_once(meta.name,data);
+				curPos = data;
+				//packet_once(meta.name,data);
 			break;
 			case "map_chunk":
 				//if(config.chunkCaching) chunkData.set(data.x + "_" + data.z, data);
 				//packetSend.push([meta.name,data]);
 				//map_add(data);
+				let test  =packetSend.filter(packet => packet[1].x == data.x && packet[1].y == data.u && packet[1].groundUp!=null);
 				packet_add(meta.name,data);
 
 				break;
 			case "unload_chunk":
-			//packetSend.filter(packet => packet[1].x == data.chunkX && packet[1].y == data.chunkY && packet[1].groundUp!=null);
-			packet_add(meta.name,data);
+			packetSend.filter(packet => packet[1].x == data.chunkX && packet[1].y == data.chunkY && packet[1].groundUp!=null);
+			//packet_add(meta.name,data);
 				//map_remove(data);
 				//if(config.chunkCaching) chunkData.delete(data.chunkX + "_" + data.chunkZ);
+				break;
+				case "spawn_entity_experience_orb":
+				
 				break;
 			case "playerlist_header":
 				if (!finishedQueue && config.minecraftserver.is2b2t) { // if the packet contains the player list, we can use it to see our place in the queue
@@ -411,9 +451,23 @@ function join() {
 			case "respawn":
 				//data.gameMode = 0;
 				//Object.assign(loginpacket, data);
+				/*if(dimension!=null){
+					if(dimension!=data.dimension){
+						console.log('RESTTY');
+						packetSend = packetSend.splice(0,20);
+						entities=[];
+						playerInfo = [];
+						multiBlockChange = {};
+						
+					}
+				}*/
+				entities=[];
+				inventory=[];
 				packet_add(meta.name,data);
 				break;
 			case "login":
+				console.log('Connected!'.cyan);
+				createServer(client.version);
 				//data.gameMode = 0;
 				//loginpacket = data;
 				//entityId = data.entityId;
@@ -424,8 +478,8 @@ function join() {
 				packet_once(meta.name,data);
 			break;
 			case "block_action":
-				console.log(meta.name,data);
-				packet_add(meta.name,data);
+				//console.log(meta.name,data);
+				//packet_add(meta.name,data);
 			break;
 			case "entity_head_rotation":
 			//	packet_add(meta.name,data);				
@@ -500,6 +554,60 @@ function join() {
 				
 				//packet_once(meta.name,data);			
 			break;
+			case "world_particles":
+			
+			break;
+			case "transaction":
+			break;
+			case "teams":
+				packet_once(meta.name,data);
+			break;
+			case "scoreboard_objective":
+				packet_once(meta.name,data);
+			break;
+			case "scoreboard_display_objective":
+				packet_once(meta.name,data);
+			break;
+			case "title":
+				packet_once(meta.name,data);
+			break;
+			case "scoreboard_score":
+				packet_once(meta.name,data);
+			break;
+			case "statistics":
+				packet_once(meta.name,data);
+			break;
+			case "entity_effect":
+			
+			break;
+			case "set_passengers":
+				packetSend.filter(packet => packet[0] == 'set_passengers' && packet[1].entityId == data.entityId);
+				packet_add(meta.name,data);
+			break;
+			case "named_sound_effect":
+			
+			break;
+			case "update_view_position":
+				packet_once(meta.name,data);
+			break;
+			case "update_view_distance":
+				packet_once(meta.name,data);
+			break;
+			case "update_light":
+				
+			break;
+			case "declare_recipes":
+				packet_once(meta.name,data);
+			break;
+			case "tags":
+				packet_once(meta.name,data);
+			break
+			case "declare_commands":
+				packet_once(meta.name,data);
+			break;
+			case "map":
+				packet_add(meta.name,data);
+			break;
 		}
 		if (proxyClient) { // if we are connected to the proxy, forward the packet we recieved to our game.
 			filterPacketAndSend(data, meta, proxyClient);
@@ -529,13 +637,13 @@ function join() {
 			else setTimeout(reconnect, 4000);
 		}
 	});
-
+	function createServer(version){
 	server = mc.createServer({ // create a server for us to connect to
 		'online-mode': false,
 		encryption: false,
 		host: '0.0.0.0',
 		port: config.ports.minecraft,
-		version: config.MCversion,
+		version: version,
 		'max-players': maxPlayers = 1
 	});
 
@@ -549,7 +657,7 @@ function join() {
 			newProxyClient.write('player_info',playerInfo[k]);
 		}
 	
-
+		
 		
 		for(var k=0; k<packetSend.length; k++){
 			newProxyClient.write(packetSend[k][0],packetSend[k][1]);
@@ -560,6 +668,8 @@ function join() {
 		/*for(mapData in mapPackets){
 			newProxyClient.write('map_chunk',mapPackets[mapData]);
 		}*/
+
+		packetList.position = curPos;
 		
 		for(property in packetList){
 			newProxyClient.write(property,packetList[property]);
@@ -577,14 +687,32 @@ function join() {
 		}
 		
 		newProxyClient.on('packet', (data, meta) => { // redirect everything we do to 2b2t
-			if(meta.name=='position'){
-				curPos = data;
+			switch(meta.name){
+				case "position":
+					curPos.x = data.x;
+					curPos.y = data.y;
+					curPos.z = data.z;
+				break;
+				case "position_look":
+					curPos.x = data.x;
+					curPos.y = data.y;
+					curPos.z = data.z;
+					curPos.pitch = data.pitch;
+					curPos.yaw = data.yaw;
+				break;
+				case "look":
+					curPos.pitch = data.pitch;
+					curPos.yaw = data.yaw;
+				break;
 			}
+			
+
 			filterPacketAndSend(data, meta, client);
 		});
 		
 		proxyClient = newProxyClient;
 	});
+	}
 }
 
 function sendChunks() {
@@ -624,7 +752,7 @@ function reconnectLoop() {
 //function to filter out some packets that would make us disconnect otherwise.
 //this is where you could filter out packets with sign data to prevent chunk bans.
 function filterPacketAndSend(data, meta, dest) {
-	if (meta.name !== "keep_alive" && meta.name !== "update_time") { //keep alive packets are handled by the client we created, so if we were to forward them, the minecraft client would respond too and the server would kick us for responding twice.
+	if (meta.name !== "keep_alive" /*&& meta.name !== "update_time"*/) { //keep alive packets are handled by the client we created, so if we were to forward them, the minecraft client would respond too and the server would kick us for responding twice.
 		dest.write(meta.name, data);
 	}
 }
