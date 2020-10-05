@@ -1,0 +1,350 @@
+<head>
+<title> Packet Editor </title>
+<style>
+
+	::-webkit-scrollbar {
+	width: 11px;
+	height: 11px;
+	}
+	::-webkit-scrollbar-button {
+	width: 0px;
+	height: 0px;
+	}
+	::-webkit-scrollbar-thumb {
+	background: #093921;
+	border: 1px solid #000000;
+	border-radius: 21px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+	background: #384908;
+	}
+	::-webkit-scrollbar-thumb:active {
+	background: #295f0c;
+	}
+	::-webkit-scrollbar-track {
+	background: #636363;
+	border: 4px solid #000000;
+	border-radius: 21px;
+	}
+	::-webkit-scrollbar-track:hover {
+	background: #363636;
+	}
+	::-webkit-scrollbar-track:active {
+	background: #333333;
+	}
+	::-webkit-scrollbar-corner {
+	background: transparent;
+	}
+
+	body {
+		background-color : rgb(50,50,50);
+	}
+	
+	button {
+		background-color : rgb(120,120,120);
+		font-size:20px;
+		position:absolute;
+	}
+	
+	button:hover {
+		background-color : rgb(145,145,145);
+	}
+	
+	#send {
+
+		left:92%;
+		top:30%;
+	}
+	
+	#once {
+		left:92%;
+		top:35%;
+	}
+	
+	#list {
+		left:92%;
+		top:40%;
+	}
+	
+	#backup {
+		left:92%;
+		top:45%;
+	}	
+	
+	#restore {
+		left:92%;
+		top:50%;
+	}
+	
+	
+	#sendList {
+		top:95%;
+		left:90%;
+	}
+	
+	#sendOnce {
+		top:95%;
+	}
+	
+	#updatePacket {
+		top:95%;
+		left:45%;
+	}
+	
+	
+	#output {
+	background-color : rgb(145,145,145);
+	top:40%;
+	width:90%;
+	height:20%;
+	font-size:23px;
+	
+	}
+	
+	#oncePackets {
+		position:absolute;
+		background-color: rgb(20,20,20);
+		width:48%;
+		top:53%;
+		height:40%;
+		overflow:auto;
+	}
+	
+	#packetList {
+		position:absolute;
+		background-color: rgb(20,20,20);
+		width:48%;
+		left:50%;
+		top:53%;
+		height:40%;
+		overflow:auto;
+	}
+	
+	
+
+</style>
+</head>
+
+
+<body>
+	<link rel="stylesheet" href="codemirror/lib/codemirror.css">
+	<link rel="stylesheet" href="codemirror/theme/panda-syntax.css">
+	<link rel="stylesheet" href="codemirror/theme/gruvbox-dark.css">
+	<textArea id="input"></textArea>
+	<textArea id="output"></textArea>
+	
+	<div id="oncePackets"></div>
+	<div id="packetList"></div>
+	
+	<script src="./codemirror/lib/codemirror.js"></script>
+	<script src="./codemirror/mode/javascript/javascript.js"></script>
+	
+	<button id="send"> Send code </button>
+	<button id="once"> Once Packets </button>
+	<button id="list"> Packet List </button>
+
+	<button id="backup"> Backup </button>
+	<button id="restore"> Restore </button>	
+	
+	<button id="sendOnce">Send New Once Packets </button>
+	
+	<button id="sendList">Send New Packet List </button>
+	
+	<button id="updatePacket">Update Selected Packet</button>
+	<script>
+		document.addEventListener('contextmenu', event => event.preventDefault());
+	  var editor = CodeMirror.fromTextArea(input, {
+		lineNumbers: true,
+		theme : 'panda-syntax',
+	  });
+	  
+	  var outputText = CodeMirror.fromTextArea(output, {
+		lineNumbers: false,
+		theme : 'gruvbox-dark',
+	  });	  
+	  
+	  outputText.setSize(window.innerWidth*0.9,300);
+	  
+	  window.onresize=function(){
+	  outputText.setSize(window.innerWidth*0.9,300);
+	  };
+		  
+	const socket = new WebSocket('ws://localhost:4269','packet');
+
+	// Connection opened
+	socket.addEventListener('open', function (event) {
+		outputText.setValue("Connected to server!");
+	});
+	
+	socket.addEventListener('close', function (event,error) {
+		console.log(event,error);
+	});
+
+	socket.addEventListener('error', function (error) {
+		console.log(error);
+	});
+
+	
+	curPacket = null;
+
+	outputText.on('change',function(){
+		if(curPacket!=null){
+			curPacket.packet = JSON.parse(outputText.getValue());
+			curPacket.heat=0;
+			curPacket.style.backgroundColor='rgb(120,200,120)';
+		}
+	});
+
+	// Listen for messages
+	socket.addEventListener('message', function (event) {
+		let message = JSON.parse(event.data);
+		switch(message[0]){
+			case "ran_code":
+				outputText.setValue(message[1]);
+			break;
+			case "once":
+				oncePackets.innerHTML="";
+				var packets = JSON.parse(message[1]);
+				for(packetData in packets){
+					var packet = packets[packetData];
+					var packetBtn = document.createElement("button");
+					packetBtn.style.position='static';
+					packetBtn.innerHTML = packetData;
+					packetBtn.packet = packet;
+					packetBtn.heat=0;
+					packetBtn.onmousedown=function(e){
+						if(e.button==0){
+							if(curPacket!=null){
+								curPacket.style.backgroundColor='rgb(120,120,120)';
+							}
+							curPacket=this;
+							outputText.setValue(JSON.stringify(this.packet,null,4));
+						}else{
+							this.heat+=1;
+							switch(this.heat){
+								case 1:
+								this.style.backgroundColor = 'rgb(200,120,120)';
+								break;
+								case 2:
+								this.style.backgroundColor = 'rgb(255,120,120)';
+								break;
+								case 3:
+								if(curPacket==this){
+									curPacket=null;
+								}
+								socket.send(JSON.stringify(['deleteOnce',this.innerHTML]));
+								this.remove();
+								break;
+							}
+						}
+					}
+					oncePackets.appendChild(packetBtn);
+				}
+			break;
+			case "list":
+				packetList.innerHTML="";
+				var packets = JSON.parse(message[1]);
+				for(packetData in packets){
+					var packet = packets[packetData];
+					var packetBtn = document.createElement("button");
+					packetBtn.style.position='static';
+					packetBtn.innerHTML = packet[0]+'_'+packetData;
+					packetBtn.packetId = packet[0];
+					packetBtn.index = packetData;
+					packetBtn.packet = packet[1];
+					packetBtn.heat=0;
+					packetBtn.onmousedown=function(e){
+						if(e.button==0){
+							if(curPacket!=null){
+								curPacket.style.backgroundColor='rgb(120,120,120)';
+							}
+							curPacket=this;
+							outputText.setValue(JSON.stringify(this.packet,null,4));
+						}else{
+							this.heat+=1;
+							switch(this.heat){
+								case 1:
+								this.style.backgroundColor = 'rgb(200,120,120)';
+								break;
+								case 2:
+								this.style.backgroundColor = 'rgb(255,120,120)';
+								break;
+								case 3:
+								if(curPacket==this){
+									curPacket=null;
+								}
+								socket.send(JSON.stringify(['deleteSend',this.index]));
+								this.remove();
+								break;
+							}
+						}
+					}
+					packetList.appendChild(packetBtn);
+				}			
+			
+			break;
+		}
+	});
+	
+	send.onclick=function(){
+		socket.send(JSON.stringify(['run_code',editor.getValue()]));
+	}
+	
+	once.onclick=function(){
+		socket.send(JSON.stringify(['once']));
+	}
+	
+	list.onclick=function(){
+		socket.send(JSON.stringify(['list']));
+	}
+	
+	sendOnce.onclick=function(){
+		var packets = {};
+	
+		for(var k =0; k<oncePackets.children.length;k++){
+			let p = oncePackets.children[k];
+			packets[p.innerHTML]=p.packet;
+		}
+		
+		socket.send(JSON.stringify(['newOnce',packets]));
+		
+	}
+	
+	sendList.onclick=function(){
+		var packets =[];
+	
+		for(var k =0; k<packetList.children.length;k++){
+			let p = packetList.children[k];
+			packets.push([p.packetId,p.packet])
+		}
+		socket.send(JSON.stringify(['newSend',packets]));
+		
+	}
+	
+	
+	
+	updatePacket.onclick=function(){
+		if(curPacket!=null){
+			//Once packet
+			if(curPacket.packetId==null){
+				socket.send(JSON.stringify(['listPacket',curPacket.innerHTML,curPacket.packet]));
+			//Send packet
+			}else{
+				socket.send(JSON.stringify(['sendPacket',curPacket.packetId,curPacket.packet,curPacket.index]));			
+			}
+		}
+	}
+	
+	backup.onclick=function(){
+		socket.send(JSON.stringify(['backup']));
+	}
+	
+	restore.onclick=function(){
+		socket.send(JSON.stringify(['restore']));	
+	}
+	  
+	  
+	  
+	  
+	</script>
+</body>

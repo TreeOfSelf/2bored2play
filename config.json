@@ -4,15 +4,15 @@
 		"web": 3100
 	},
 	"password": "",
-	"MCversion": false,
+	"MCversion": "1.12.2",
 	"logging": true,
 	"reconnect": {
 		"onError": true,
 		"notConnectedQueueEnd": false
 	},
 	"minecraftserver": {
-		"hostname": "2b2t.org",
-		"is2b2t": true,
+		"hostname": "9b9t.com",
+		"is2b2t": false,
 		"port": 25565,
 		"version": "1.12.2",
 		"onlinemode": true,

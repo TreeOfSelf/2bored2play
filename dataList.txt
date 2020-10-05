@@ -1,0 +1,303 @@
+{
+ "difficulty": {
+  "difficulty": 3
+ },
+ "abilities": {
+  "flags": 0,
+  "flyingSpeed": 0.05000000074505806,
+  "walkingSpeed": 0.10000000149011612
+ },
+ "held_item_slot": {
+  "slot": 1
+ },
+ "teams": {
+  "team": "collideRule_9008",
+  "mode": 1
+ },
+ "world_border": {
+  "action": 3,
+  "x": 0,
+  "z": 0,
+  "old_radius": 60000000,
+  "new_radius": 60000000,
+  "speed": 0,
+  "portalBoundary": 29999984,
+  "warning_time": 5,
+  "warning_blocks": 15
+ },
+ "update_time": {
+  "age": [
+   0,
+   138767
+  ],
+  "time": [
+   0,
+   -2012845735
+  ]
+ },
+ "spawn_position": {
+  "location": {
+   "x": 0,
+   "y": 64,
+   "z": 0
+  }
+ },
+ "window_items": {
+  "windowId": 8,
+  "items": [
+   {
+    "blockId": 46,
+    "itemCount": 5,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 280,
+    "itemCount": 5,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 87,
+    "itemCount": 56,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 5,
+    "itemCount": 1,
+    "itemDamage": 2
+   },
+   {
+    "blockId": 6,
+    "itemCount": 3,
+    "itemDamage": 2
+   },
+   {
+    "blockId": 116,
+    "itemCount": 1,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 4,
+    "itemCount": 64,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 360,
+    "itemCount": 8,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 17,
+    "itemCount": 5,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 44,
+    "itemCount": 22,
+    "itemDamage": 3
+   },
+   {
+    "blockId": 308,
+    "itemCount": 1,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 309,
+    "itemCount": 1,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 13,
+    "itemCount": 11,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 306,
+    "itemCount": 1,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 338,
+    "itemCount": 10,
+    "itemDamage": 0
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": 12,
+    "itemCount": 1,
+    "itemDamage": 0
+   },
+   {
+    "blockId": 338,
+    "itemCount": 2,
+    "itemDamage": 0
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   },
+   {
+    "blockId": -1
+   }
+  ]
+ },
+ "playerlist_header": {
+  "header": "{\"text\":\"\\n§7§o§l2BUILDERS§r\\n§7§o§l2TOOLS     §r\\n\"}",
+  "footer": "{\"text\":\"\\n§l§a16.75§r §3tps §3— §3251§r §3players §3— §3100§r §3ping §3— §30d 4h 53m 27s§r §3uptime\\n\\n§7reddit.com/r/2b2t\\n§8contact: 2b2t.org@gmail.com\\n\"}"
+ },
+ "position": {
+  "x": -43244.329408479665,
+  "y": 61.53584062504456,
+  "z": 45683.08465602542,
+  "yaw": -17.399599075317383,
+  "pitch": 60.600013732910156,
+  "flags": 0,
+  "teleportId": 2805
+ },
+ "game_state_change": {
+  "reason": 8,
+  "gameMode": 1
+ },
+ "update_health": {
+  "health": 20,
+  "food": 16,
+  "foodSaturation": 0
+ },
+ "experience": {
+  "experienceBar": 0,
+  "level": 0,
+  "totalExperience": 0
+ },
+ "close_window": {
+  "windowId": 0
+ }
+}

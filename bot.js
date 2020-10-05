@@ -54,6 +54,16 @@ global.rootEval = function(cmd){
 	if(typeof result == 'object') console.log(result); else return(result);
 };
 
+global.webEval = function(cmd){
+	try{
+	var result = eval(cmd);
+	return(JSON.stringify(result,null,4));
+	}catch(e){
+	return(JSON.stringify(e,null,4));	
+	}
+};
+
+
 
 //Other modules
 const mineflayer = require('mineflayer');

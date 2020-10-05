@@ -26,7 +26,8 @@
     "prismarine-tokens-fixed": "^1.1.2",
     "serverline": "^1.5.0",
     "socket.io": "^2.3.0",
-    "three": "^0.121.1"
+    "three": "^0.121.1",
+    "websocket": "^1.0.32"
   },
   "devDependencies": {}
 }
