@@ -41,11 +41,11 @@ Typing commands without a slash will execute it as code.
 
 
 ## Media
-Browser Map:
+Browser Map:__
 ![image](https://github.com/TreeOfSelf/2bored2play/assets/53889485/c58bf32d-3dd3-4efc-bab1-40183ca43e4b)
-Escape Spawn AI:
+Escape Spawn AI:__
 [![Escape Spawn AI](http://img.youtube.com/vi/JqV5kS_ofT8/0.jpg)](http://www.youtube.com/watch?v=JqV5kS_ofT8 "Escape Spawn AI")
-Parkour Module:
+Parkour Module:__
 [![Parkour Module](http://img.youtube.com/vi/f2XB4dmkzaw/0.jpg)](http://www.youtube.com/watch?v=f2XB4dmkzaw "Parkour Module")
 
 
