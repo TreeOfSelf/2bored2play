@@ -43,7 +43,7 @@ Typing commands without a slash will execute it as code.
 Browser Map:\
 ![image](https://hardcoreanarchy.gay/images/prismarine.JPG)\
 Viewer Lite (Video):\
-[![Escape Spawn AI](http://img.youtube.com/vi/I0sypisvOHc/0.jpg)](http://www.youtube.com/watch?v=I0sypisvOHc "Viewer Lite")\
+[![Escape Spawn AI](http://img.youtube.com/vi/qkgnGl55eNM/0.jpg)](http://www.youtube.com/watch?v=I0sypisvOHc "Viewer Lite")\
 Escape Spawn AI (Video):\
 [![Escape Spawn AI](http://img.youtube.com/vi/JqV5kS_ofT8/0.jpg)](http://www.youtube.com/watch?v=JqV5kS_ofT8 "Escape Spawn AI")\
 Parkour Module (Video):\
