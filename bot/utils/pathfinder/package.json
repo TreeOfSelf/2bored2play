@@ -1,0 +1,56 @@
+{
+  "_from": "mineflayer-pathfinder",
+  "_id": "mineflayer-pathfinder@1.0.11",
+  "_inBundle": false,
+  "_integrity": "sha512-pdMpSR8ARvcanmdGWN9mEx/vAb/tLyxgZVBCV6vracGWtLSde0Z1ebNXqR+kc173QF7wfEda7DPjUJ3Wh/HPgw==",
+  "_location": "/mineflayer-pathfinder",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "mineflayer-pathfinder",
+    "name": "mineflayer-pathfinder",
+    "escapedName": "mineflayer-pathfinder",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/mineflayer-pathfinder/-/mineflayer-pathfinder-1.0.11.tgz",
+  "_shasum": "c53e03eb0128c4b46f6ed52fb013109befdd79f0",
+  "_spec": "mineflayer-pathfinder",
+  "_where": "C:\\Programming\\prismarine",
+  "author": {
+    "name": "Karang"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "minecraft-data": "^2.63.0",
+    "mineflayer": "^2.25.0",
+    "prismarine-block": "^1.7.1",
+    "prismarine-entity": "^1.0.0",
+    "prismarine-item": "^1.5.0",
+    "prismarine-nbt": "^1.3.0",
+    "prismarine-physics": "^1.0.2",
+    "vec3": "^0.1.6"
+  },
+  "deprecated": false,
+  "description": "[![npm version](https://badge.fury.io/js/mineflayer-pathfinder.svg)](https://badge.fury.io/js/mineflayer-pathfinder) ![npm](https://img.shields.io/npm/dt/mineflayer-pathfinder) [![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/Karang/mineflayer-pathfinder)",
+  "devDependencies": {
+    "require-self": "^0.2.3",
+    "standard": "^14.3.4"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "name": "mineflayer-pathfinder",
+  "scripts": {
+    "fix": "standard --fix",
+    "lint": "standard",
+    "prepare": "npm install require-self && require-self",
+    "test": "npm run lint && require-self"
+  },
+  "version": "1.0.11"
+}

@@ -1,0 +1,176 @@
+██████╗ ███████╗████████╗██████╗  ██████╗ ██╗   ██╗ ██████╗ ██╗  ██╗
+██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗██║   ██║██╔═══██╗╚██╗██╔╝
+██████╔╝█████╗     ██║   ██████╔╝██║   ██║██║   ██║██║   ██║ ╚███╔╝ 
+██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║╚██╗ ██╔╝██║   ██║ ██╔██╗ 
+██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝ ╚████╔╝ ╚██████╔╝██╔╝ ██╗
+╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝   ╚═══╝   ╚═════╝ ╚═╝  ╚═╝
+
+██████╗ ███████╗ █████╗ ██████╗ ███╗   ███╗███████╗
+██╔══██╗██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
+██████╔╝█████╗  ███████║██║  ██║██╔████╔██║█████╗  
+██╔══██╗██╔══╝  ██╔══██║██║  ██║██║╚██╔╝██║██╔══╝  
+██║  ██║███████╗██║  ██║██████╔╝██║ ╚═╝ ██║███████╗
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝     ╚═╝╚══════╝
+
+Last updated: 8/8/2019
+Version : 0.0.1
+
+  ___                __                                         
+ /    / /           /    /                   /                  
+(___   (  ___      (___ (___  ___       ___ (___       ___  ___ 
+|    | | |___)         )|    |   )|   )|    |    |   )|   )|___)
+|    | | |__        __/ |__  |    |__/ |__  |__  |__/ |    |__  
+
+
+-RetroVox
+	*index.html
+	*readme
+	-game
+		*blockControl.js
+	-playeControl
+		*playerContro.js
+	-render
+		*gl-matrix-min.js
+		*render.js
+		*renderCulling.js
+		*renderFrustrum.js
+		*renderShaders.js
+
+
+  __                              
+ /|  /                      |     
+( | (___  ___  ___  ___  ___| ___ 
+  | |   )|   )|___)|   )|   )|___ 
+  | |  / |    |__  |__/||__/  __/ 
+                                
+Main
+	-Handles rendering 
+	-Seams together chunks into sectors
+	-Handles physics and collisions 
+	-Player controls 
+
+
+Culling
+	-Creates large amounts of blocks (to unload the work off the main thread)
+	-Culls out blocks and meshes them together using greedy meshing
+	-Communicates the draw data back to the main thread, so it may seam it into sectors
+
+
+  __                                                  
+|/  |                     /      /    /               
+|   | ___  ___  ___  ___    ___ (___    ___  ___  ___ 
+|   )|___)|___ |    |   )| |   )|    | |   )|   )|___ 
+|__/ |__   __/ |__  |    | |__/ |__  | |__/ |  /  __/ 
+                           |                          
+	
+
+
+	
+___  ___  __         __  
+ |  |__  |__)  |\/| /__` 
+ |  |___ |  \  |  | .__/ 
+
+ 
+Thread - A process running on a core of your CPU. These are kept seperate and only communicate between.
+
+ 
+Block - A single voxel in the world. Has two vectors associated.
+
+		Position : X,Y,Z 
+		Color : R,G,B (0-255)
+		
+		
+Chunk - Contains large amounts of blocks
+
+		blockList : the entire 1D array of a cube containg each blocks value. 
+		blockDraws
+			Position: contains draw data for vertex positions in the chunk
+			
+			Color: contains draw data for vertex colors in the chunk
+
+
+Sector - Contains amount of chunks into one (The reason we use sectors is to reduce draw calls to low end devices)
+
+		positionBuffer: webGL buffer containg position data of all seamed chunks
+		
+		colorBuffer: webGL buffer containg color data of all seamed chunks
+						   
+
+
+
+
+ ___         ___  __  
+|__  | |    |__  /__` 
+|    | |___ |___ .__/ 
+                     
+					 
+Index.html 
+	*Main HTML document loading all of the JS together and handling any webpage inputs/buttons that may be needed. 
+
+Readme 
+	*The file that describes the inner-workings of RetroVox
+
+Game
+	blockControl.js
+		*Handles blocks/chunks/sectors for the main thread. Also communicates with the culling thread.
+
+playerControl
+	playerControl.js
+		*Handles physics/movement/collisions and player input including the reference block drawn infront of you
+
+Rendering
+	render.js
+		*Contains main webGL code. Also takes care of looping through sectors and sorting/culling them. 
+	renderShaders.js
+		*Contains GLSL shaders, as well as program information.
+	renderFrustrum.js
+		*Seperated code for creating view frustrum, as it is lengthy.
+	renderCulling.js
+		*Code ran in seperate thread to handle meshing/culling/building 
+	gl-matrix-min.js 
+		*Math library for vector/matrix math (also contained within renderCulling.js)
+		
+
+
+ _   _                 _ _                        _        
+| | | |               (_) |                      | |       
+| |_| | _____      __  _| |_  __      _____  _ __| | _____ 
+|  _  |/ _ \ \ /\ / / | | __| \ \ /\ / / _ \| '__| |/ / __|
+| | | | (_) \ V  V /  | | |_   \ V  V / (_) | |  |   <\__ \
+\_| |_/\___/ \_/\_/   |_|\__|   \_/\_/ \___/|_|  |_|\_\___/
+
+
+Block is changed:
+	-If it is a single block being deleted or created, it will be sent directly from the main thread from a build/delete buffer.
+	-If it is a large change (spheres,cubes,big deletes) the size properties will only be sent
+		(if this is the case, the cullWorker will process the shape seperately so to not slowdown the main thread)
+	
+	-For each voxel changed on the culling thread, the chunk it resides in will be marked for re-drawing.
+	
+Culling:
+	-The culling process is a repeated function that runs infinitely checking chunks nearby the camera based on view distance.
+	-When it finds a chunk marked for redrawing, it greedy meshes it and sends the information to the main thread
+	
+Main thread receives draw data:
+	-The main thead receives each updated chunks vertex positions, colors, and blockList. 
+	Mark the sector the chunk resides in for redraw
+	-It reseams all changed sectors during render time, if they are marked for re drawing. 
+	-Similar to how the culling process loops through nearby chunks, the render will loop through nearby sectors
+
+Drawing a sector:
+	-First we go through and compile a list of nearby sectors based on distance in a cube if they are drawn.
+	-We sort the list by distance, drawing nearby sectors to reduce over draw, and check the sectors against 
+	the view frustrum to make sure they are in view. 
+	-Sectors are rendered. 
+	
+Physics/Collisions/Controls
+	-All ran on playerControl() function each frame, inside of render. The playerControl function is defined in playerControl.js
+
+
+
+
+
+------------------------------------------------------
+
+
+Let me know if anything should be written up clearer, or if I missed anything. 

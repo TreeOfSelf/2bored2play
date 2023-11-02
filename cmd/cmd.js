@@ -1,6 +1,5 @@
 const myRL = require('serverline')
-const mineflayerViewer = require(pathRoot+'/utils/viewer').mineflayer
-const print = require(pathRoot+'/utils/print.js');
+const print = require('./print.js');
 
 
 //Clear console and initialize the server line input 
@@ -12,19 +11,26 @@ myRL.init({
 	colorMode : true,
 })
 
-var completionArray = ['/help','/view','/kill','/pos'];
+var completionArray = ['/help','/view','/kill','/pos','/startProxy','/startBot','/ai (name)'];
 var helpArray = ["Displays a list of commands.",
 "Starts the web viewer if it is not running.",
 "Kills the bot.",
 "States the bots current coordinates.",
+"Starts the proxy",
+"Starts the bot",
+"Start a certain AI",
 ]; 
 myRL.setCompletion(completionArray);
 
 
 function run_cmd(cmd){
-	switch(cmd){
+	cmd = cmd.split(" ");
+	switch(cmd[0]){
 		default:
 			return("Unknown command. Type /help for a list of available commands.".red);
+		break;
+		case "ai":
+			return(global.rootEval('bot_change("'+cmd[1]+'")'));
 		break;
 		case 'help':
 			var helpList = "";
@@ -65,6 +71,12 @@ function run_cmd(cmd){
 				return("Bot is not started!".red);
 			}
 		break;
+		case 'startProxy':
+			return(global.rootEval('startProxy()'));
+		break;
+		case 'startBot':
+			return(global.rootEval('startBot()'));
+		break;
 	}
 }
 
@@ -89,7 +101,10 @@ myRL.on('line', function(line) {
 	//Check if it is a command
 	if(line[0]=='/'){
 		line = line.replace('/','');
-		console.log(run_cmd(line));
+		var result = run_cmd(line);
+		if(result!=null){
+			console.log(result);
+		}
 	//If it is not a command run it as code
 	}else{
 		try {
@@ -110,7 +125,7 @@ myRL.on('line', function(line) {
 
 //Display introduction 
 
-console.log(`Welcome to 2bored2play v0.0.01
+console.log(`Welcome to 2bored2play v0.0.2
 Type /help to display built in commands. You can also press tab. 
 Typing commands without a slash will execute it as code.`.brightGreen);
 console.log("Sebastian Frederick 2020".trap.rainbow);

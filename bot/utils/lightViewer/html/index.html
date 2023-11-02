@@ -1,0 +1,80 @@
+<!--
+  __  __ _  ____  ____  _  _     _  _  ____  _  _  __   
+ (  )(  ( \(    \(  __)( \/ )   / )( \(_  _)( \/ )(  )  
+  )( /    / ) D ( ) _)  )  (  _ ) __ (  )(  / \/ \/ (_/\
+ (__)\_)__)(____/(____)(_/\_)(_)\_)(_/ (__) \_)(_/\____/
+ 
+ Main html file to pull everything together 
+ 
+ -->
+ 
+<!DOCTYPE html>
+<html>
+	<meta charset="UTF-8">
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimal-ui">
+		<title>🌌 RetroVox 🌌️ </title>
+		<style>
+			html, body {margin: 0; height: 100%; overflow: hidden}
+			.navbar{
+				visibility: hidden;
+			}
+			#pandaCanvas {
+				width : 100%;
+				height : 100%;
+			}
+			#text {
+				position : absolute;
+				left : 2%;
+				top: 2%;
+				color : white;
+				user-select: none; : none;
+			}
+			#statusText {
+				position : absolute;
+				left : 2%;
+				top: 9%;
+				color : red;
+				user-select: none; : none;
+			}
+		</style>
+	
+	</head> 
+	 
+
+	<body>
+		<div id="pandaDiv">
+		<p id="text"> prismarine-viewer-lite </p>
+		<p id="statusText"> Connecting... </p>
+		<canvas id="pandaCanvas"></canvas>
+		</div>
+
+		<script src="render/gl-matrix-min.js"></script>
+		<script src="lib/lz-string.min.js"></script>
+		<script src="lib/lzma.min.js"></script>		
+		<script src="lib/simplepeer.min.js"></script>				
+		<script src="networking.js"></script>				
+								
+
+		
+		<!-- Shaders-->
+		<script src="render/renderShaders.js"></script>
+		
+		
+		<!-- Render -->
+		<script src="render/renderFrustrum.js"></script>
+		<script src="render/render.js"></script>
+		
+		<!--Player Control -->
+		<script src="Playercontrol/playerControl.js"></script>
+		<!-- Game -->
+		<script src="game/entityControl.js"></script>
+
+		<script src="game/blockControl.js"></script>
+
+		
+
+		
+		
+	</body>
+</html>
