@@ -25,7 +25,6 @@ Then, just node main.js, you can type /help for a list of commands
 Welcome to 2bored2play v0.2.5
 Type /help to display built in commands. You can also press tab.
 Typing commands without a slash will execute it as code.
-ϟĕɮ@ϟŁ༏ΔƝ ӺƦҼԂƎȐ༏ϾҠ 2023
 </help
 /help - Displays a list of commands.
 /view - Starts the web viewer if it is not running.
