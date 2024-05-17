@@ -41,7 +41,7 @@ Typing commands without a slash will execute it as code.
 
 ## Media
 Browser Map:\
-![image](https://hardcoreanarchy.gay/images/prismarine.JPG)\
+![image](https://sebastiancodes.online/github/prismarine.JPG)\
 Viewer Lite (Video):\
 [![Escape Spawn AI](http://img.youtube.com/vi/qkgnGl55eNM/0.jpg)](http://www.youtube.com/watch?v=I0sypisvOHc "Viewer Lite")\
 Escape Spawn AI (Video):\
